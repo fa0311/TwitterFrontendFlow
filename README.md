@@ -63,6 +63,34 @@ print(TwitterFrontendFlow().
     PasswordResetConfirmChallenge("認証コード").content)
 ```
 
+
+## Save / Load
+```
+(TwitterFrontendFlow()
+      .login_flow()
+      .LoginJsInstrumentationSubtask()
+      .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+      .AccountDuplicationCheck()
+      .LoginEnterPassword("パスワード")
+      .SaveCookies("user.json"))
+```
+
+```
+(TwitterFrontendFlow()
+        .LoadCookies("user.json"))
+```
+
+## after login
+
+ツイート
+```
+print(
+(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .CreateTweet("ツイートしたい文字列").content)
+```
+
+
 ## sample
 user_idを取得
 ```
@@ -80,3 +108,4 @@ print(TwitterFrontendFlow().
     PwrJsInstrumentationSubtask().
     PasswordResetBegin("電話番号/メールアドレス/ユーザー名").
     content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
+```
