@@ -235,6 +235,23 @@ class TwitterFrontendFlow:
         self.content = response
         return self
 
+    # ct0の更新 無くても動くっぽい
+
+    def Viewer(self):
+        params = {
+            "variables": json.dumps({
+                "withCommunitiesMemberships":True,
+                "withCommunitiesCreation":True,
+                "withSuperFollowsUserFields":True
+            })
+        }
+        response = self.session.get(
+            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer", headers=self.__get_headers(), params=params
+        )
+
+        self.content = response.json()
+        return self
+
     # パスワードリセット
 
     def password_reset_flow(self):
@@ -362,24 +379,6 @@ class TwitterFrontendFlow:
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
-        return self
-
-
-    # ct0の更新 無くても動くっぽい
-
-    def Viewer(self):
-        params = {
-            "variables": json.dumps({
-                "withCommunitiesMemberships":True,
-                "withCommunitiesCreation":True,
-                "withSuperFollowsUserFields":True
-            })
-        }
-        response = self.session.get(
-            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer", headers=self.__get_headers(), params=params
-        )
-
-        self.content = response.json()
         return self
 
     # ログイン後
