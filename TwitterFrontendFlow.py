@@ -279,6 +279,25 @@ class TwitterFrontendFlow:
         self.flow_token = response["flow_token"]
         self.content = response
         return self
+    
+    def PwrKnowledgeChallenge(self, text):
+        data = {
+            "flow_token": self.flow_token,
+            "subtask_inputs":[{
+                "subtask_id":"PwrKnowledgeChallenge",
+                "enter_text":{
+                    "text":text,
+                    "link":"next_link"
+                }
+            }]
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+        ).json()
+        self.flow_token = response["flow_token"]
+        self.content = response
+        return self
+
 
     def PasswordResetConfirmChallenge(self, code):
         data = {
