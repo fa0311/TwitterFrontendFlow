@@ -73,7 +73,7 @@ print(TwitterFrontendFlow().
     content["subtasks"][0]["check_logged_in_account"]["user_id"])
 ```
 
-認証コードをメールで送信する
+メールアドレスを取得
 ```
 print(TwitterFrontendFlow().
     password_reset_flow().
