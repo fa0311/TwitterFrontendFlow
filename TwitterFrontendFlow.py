@@ -2,9 +2,10 @@ import requests
 import json
 
 class TwitterFrontendFlow:
-    def __init__(self):
+    def __init__(self, proxies={}):
         self.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
         self.AUTHORIZATION =  "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
+        self.proxies = proxies
         self.session = requests.session()
         self.__twitter()
         self.x_guest_token = self.__get_guest_token()
@@ -14,7 +15,7 @@ class TwitterFrontendFlow:
             "User-Agent": self.USER_AGENT,
         }
         response = self.session.get(
-            "https://twitter.com/", headers=headers
+            "https://twitter.com/", headers=headers, proxies=self.proxies
         )
 
     def __get_guest_token(self):
@@ -23,7 +24,7 @@ class TwitterFrontendFlow:
             "User-Agent": self.USER_AGENT,
         }
         response = self.session.post(
-            "https://api.twitter.com/1.1/guest/activate.json", headers=headers
+            "https://api.twitter.com/1.1/guest/activate.json", headers=headers, proxies=self.proxies
         ).json()
         return response["guest_token"]
 
@@ -60,7 +61,7 @@ class TwitterFrontendFlow:
             "flow_name":"login"
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -86,7 +87,7 @@ class TwitterFrontendFlow:
             }
         ]}
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -110,7 +111,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -127,7 +128,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -145,7 +146,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -163,7 +164,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -181,7 +182,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -211,7 +212,7 @@ class TwitterFrontendFlow:
             "flow_name":"password_reset"
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -237,7 +238,7 @@ class TwitterFrontendFlow:
             }
         ]}
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -255,7 +256,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -273,7 +274,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -291,7 +292,7 @@ class TwitterFrontendFlow:
             }]
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
