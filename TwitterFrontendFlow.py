@@ -296,35 +296,3 @@ class TwitterFrontendFlow:
         self.flow_token = response["flow_token"]
         self.content = response
         return self
-
-    # ログイン後
-
-    def O_C5Q6xAVNOmeolcXjKqYw(self):
-        params = {
-            "variables": '{"withCommunitiesMemberships":true,"withCommunitiesCreation":true,"withSuperFollowsUserFields":true}'
-        }
-        response = self.session.get(
-            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer", headers=self.__get_headers(), params=params
-        ).json()
-        print(self.session.cookies)
-        self.content = response
-        return self
-
-    def CreateTweet(self):
-        headers = {
-            "authorization": self.AUTHORIZATION,
-            "User-Agent": self.USER_AGENT,
-            "x-twitter-auth-type": "OAuth2Session",
-            "x-twitter-active-user": "yes",
-            "x-twitter-client-language": "ja"
-        }
-        data = {
-            "queryId": "XyvN0Wv13eeu_gVIHDi10g",
-            "variables": "{\"tweet_text\":\"まんこ\",\"media\":{\"media_entities\":[],\"possibly_sensitive\":false},\"withDownvotePerspective\":false,\"withReactionsMetadata\":false,\"withReactionsPerspective\":false,\"withSuperFollowsTweetFields\":true,\"withSuperFollowsUserFields\":true,\"semantic_annotation_ids\":[],\"dark_request\":false,\"withBirdwatchPivots\":false}"
-        }
-        response = self.session.post(
-            "https://twitter.com/i/api/graphql/XyvN0Wv13eeu_gVIHDi10g/CreateTweet", headers=headers, json=data
-        ).json()
-        print(self.session.cookies)
-        self.content = response
-        return self
