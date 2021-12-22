@@ -4,8 +4,8 @@ TwitterのLogin Flowをいじる
 ## proxy
 ```
 TwitterFrontendFlow(proxies={
-    "http":"",
-    "https":""
+        "http":"",
+        "https":""
 })
 ```
 
@@ -43,24 +43,24 @@ print(TwitterFrontendFlow()
 ## password reset flow
 
 ```
-print(TwitterFrontendFlow().
-    password_reset_flow().
-    PwrJsInstrumentationSubtask().
-    PasswordResetBegin("電話番号/メールアドレス/ユーザー名").
-    PasswordResetChooseChallenge().
-    PasswordResetConfirmChallenge("認証コード").content)
+print(TwitterFrontendFlow()
+    .password_reset_flow()
+    .PwrJsInstrumentationSubtask()
+    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .PasswordResetChooseChallenge()
+    .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
 個人情報を確認してください
 ```
-print(TwitterFrontendFlow().
-    password_reset_flow().
-    PwrJsInstrumentationSubtask().
-    PasswordResetBegin("電話番号/メールアドレス/ユーザー名").
-    PwrKnowledgeChallenge("メールアドレス").
-    PwrKnowledgeChallenge("電話番号").
-    PasswordResetChooseChallenge().
-    PasswordResetConfirmChallenge("認証コード").content)
+print(TwitterFrontendFlow()
+    .password_reset_flow()
+    .PwrJsInstrumentationSubtask().
+    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .PwrKnowledgeChallenge("メールアドレス")
+    .PwrKnowledgeChallenge("電話番号")
+    .PasswordResetChooseChallenge()
+    .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
 
@@ -84,8 +84,7 @@ print(TwitterFrontendFlow().
 
 ツイート
 ```
-print(
-(TwitterFrontendFlow()
+print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateTweet("ツイートしたい文字列").content)
 ```
@@ -94,18 +93,18 @@ print(
 ## sample
 user_idを取得
 ```
-print(TwitterFrontendFlow().
-    login_flow().
-    LoginJsInstrumentationSubtask().
-    LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名").
-    content["subtasks"][0]["check_logged_in_account"]["user_id"])
+print(TwitterFrontendFlow()
+    .login_flow()
+    .LoginJsInstrumentationSubtask()
+    .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+    .content["subtasks"][0]["check_logged_in_account"]["user_id"])
 ```
 
 メールアドレスを取得
 ```
-print(TwitterFrontendFlow().
-    password_reset_flow().
-    PwrJsInstrumentationSubtask().
-    PasswordResetBegin("電話番号/メールアドレス/ユーザー名").
-    content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
+print(TwitterFrontendFlow()
+    .password_reset_flow()
+    .PwrJsInstrumentationSubtask()
+    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
 ```
