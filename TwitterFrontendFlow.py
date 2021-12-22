@@ -32,10 +32,44 @@ class TwitterFrontendFlow:
         return {
             "authorization": self.AUTHORIZATION,
             "User-Agent": self.USER_AGENT,
+            "Content-type": "application/json",
             "x-guest-token": self.x_guest_token,
+            "x-csrf-token": self.session.cookies.get('ct0'),
             "x-twitter-active-user": "yes",
-            "x-twitter-client-language": "ja"
+            "x-twitter-client-language": "ja",
         }
+
+    # Cookieの保存(jsonだから本番環境では使わないように)
+
+    def LoadCookies(self, file_path):
+        with open(file_path, 'r') as f:
+            for cookie in json.load(f):
+                self.session.cookies.set_cookie(requests.cookies.create_cookie(**cookie))
+        return self
+
+    def SaveCookies(self, file_path):
+        cookies=[]
+        for cookie in self.session.cookies:
+            cookie_dict = dict(
+                version=cookie.version,
+                name=cookie.name,
+                value=cookie.value,
+                port=cookie.port,
+                domain=cookie.domain,
+                path=cookie.path,
+                secure=cookie.secure,
+                expires=cookie.expires,
+                discard=cookie.discard,
+                comment=cookie.comment,
+                comment_url=cookie.comment_url,
+                rfc2109=cookie.rfc2109,
+                rest=cookie._rest
+            )
+            cookies.append(cookie_dict)
+
+        with open(file_path, 'w') as f:
+            json.dump(cookies, f, indent=4)
+        return self
 
     # ログイン
 
@@ -188,6 +222,19 @@ class TwitterFrontendFlow:
         self.content = response
         return self
 
+    # attの取得 無くても動くっぽい
+
+    def get_att(self):
+        data = {
+            "flow_token": self.flow_token,
+            "subtask_inputs":[]
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+        ).json()
+        self.content = response
+        return self
+
     # パスワードリセット
 
     def password_reset_flow(self):
@@ -314,5 +361,50 @@ class TwitterFrontendFlow:
             "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
         ).json()
         self.flow_token = response["flow_token"]
+        self.content = response
+        return self
+
+
+    # ct0の更新 無くても動くっぽい
+
+    def Viewer(self):
+        params = {
+            "variables": json.dumps({
+                "withCommunitiesMemberships":True,
+                "withCommunitiesCreation":True,
+                "withSuperFollowsUserFields":True
+            })
+        }
+        response = self.session.get(
+            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer", headers=self.__get_headers(), params=params
+        )
+
+        self.content = response.json()
+        return self
+
+    # ログイン後
+
+    def CreateTweet(self, tweet_text):
+        data = {
+            "queryId": "XyvN0Wv13eeu_gVIHDi10g",
+            "variables": json.dumps({
+            "tweet_text": tweet_text,
+            "media": {
+                "media_entities": [],
+                "possibly_sensitive": False
+            },
+            "withDownvotePerspective": False,
+            "withReactionsMetadata": False,
+            "withReactionsPerspective": False,
+            "withSuperFollowsTweetFields": True,
+            "withSuperFollowsUserFields": False,
+            "semantic_annotation_ids": [],
+            "dark_request": False,
+            "withBirdwatchPivots": False
+            })
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/XyvN0Wv13eeu_gVIHDi10g/CreateTweet", headers=self.__get_headers(), json=data
+        ).json()
         self.content = response
         return self
