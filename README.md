@@ -66,8 +66,7 @@ print(TwitterFrontendFlow().
 ## sample
 user_idを取得
 ```
-print(
-    TwitterFrontendFlow().
+print(TwitterFrontendFlow().
     login_flow().
     LoginJsInstrumentationSubtask().
     LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名").
@@ -76,8 +75,7 @@ print(
 
 認証コードをメールで送信する
 ```
-print(
-    TwitterFrontendFlow().
+print(TwitterFrontendFlow().
     password_reset_flow().
     PwrJsInstrumentationSubtask().
     PasswordResetBegin("電話番号/メールアドレス/ユーザー名").
