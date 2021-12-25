@@ -18,7 +18,7 @@ class TwitterFrontendFlow:
         response = self.session.get(
             "https://twitter.com/", headers=headers, proxies=self.proxies
         )
-        return response["guest_token"]
+        return self
 
     def __get_guest_token(self):
         headers = {
@@ -454,6 +454,35 @@ class TwitterFrontendFlow:
             "https://twitter.com/i/api/graphql/XyvN0Wv13eeu_gVIHDi10g/CreateTweet",
             headers=self.__get_headers(),
             json=data,
+        ).json()
+        self.content = response
+        return self
+
+    def UserMedia(self, id):
+        params = {
+            "variables": json.dumps(
+                {
+                    "userId": id,
+                    "count": 20,
+                    "withTweetQuoteCount": False,
+                    "includePromotedContent": False,
+                    "withSuperFollowsUserFields": True,
+                    "withBirdwatchPivots": False,
+                    "withDownvotePerspective": False,
+                    "withReactionsMetadata": False,
+                    "withReactionsPerspective": False,
+                    "withSuperFollowsTweetFields": True,
+                    "withClientEventToken": False,
+                    "withBirdwatchNotes": False,
+                    "withVoice": True,
+                    "withV2Timeline": False,
+                }
+            )
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/nb94E0dZSl9KfCtaqeqgiw/UserMedia",
+            headers=self.__get_headers(),
+            params=params,
         ).json()
         self.content = response
         return self
