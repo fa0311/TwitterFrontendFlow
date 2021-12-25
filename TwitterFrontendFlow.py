@@ -1,10 +1,11 @@
 import requests
 import json
 
+
 class TwitterFrontendFlow:
     def __init__(self, proxies={}):
         self.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
-        self.AUTHORIZATION =  "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
+        self.AUTHORIZATION = "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
         self.proxies = proxies
         self.session = requests.session()
         self.__twitter()
@@ -17,6 +18,7 @@ class TwitterFrontendFlow:
         response = self.session.get(
             "https://twitter.com/", headers=headers, proxies=self.proxies
         )
+        return response["guest_token"]
 
     def __get_guest_token(self):
         headers = {
@@ -24,7 +26,9 @@ class TwitterFrontendFlow:
             "User-Agent": self.USER_AGENT,
         }
         response = self.session.post(
-            "https://api.twitter.com/1.1/guest/activate.json", headers=headers, proxies=self.proxies
+            "https://api.twitter.com/1.1/guest/activate.json",
+            headers=headers,
+            proxies=self.proxies,
         ).json()
         return response["guest_token"]
 
@@ -34,7 +38,7 @@ class TwitterFrontendFlow:
             "User-Agent": self.USER_AGENT,
             "Content-type": "application/json",
             "x-guest-token": self.x_guest_token,
-            "x-csrf-token": self.session.cookies.get('ct0'),
+            "x-csrf-token": self.session.cookies.get("ct0"),
             "x-twitter-active-user": "yes",
             "x-twitter-client-language": "ja",
         }
@@ -42,13 +46,15 @@ class TwitterFrontendFlow:
     # Cookieの保存(jsonだから本番環境では使わないように)
 
     def LoadCookies(self, file_path):
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             for cookie in json.load(f):
-                self.session.cookies.set_cookie(requests.cookies.create_cookie(**cookie))
+                self.session.cookies.set_cookie(
+                    requests.cookies.create_cookie(**cookie)
+                )
         return self
 
     def SaveCookies(self, file_path):
-        cookies=[]
+        cookies = []
         for cookie in self.session.cookies:
             cookie_dict = dict(
                 version=cookie.version,
@@ -63,11 +69,11 @@ class TwitterFrontendFlow:
                 comment=cookie.comment,
                 comment_url=cookie.comment_url,
                 rfc2109=cookie.rfc2109,
-                rest=cookie._rest
+                rest=cookie._rest,
             )
             cookies.append(cookie_dict)
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(cookies, f, indent=4)
         return self
 
@@ -75,27 +81,27 @@ class TwitterFrontendFlow:
 
     def login_flow(self):
         data = {
-            "input_flow_data":{
-                "flow_context":{
-                    "debug_overrides":{},
-                    "start_location":{
-                        "location":"splash_screen"
-                    }
+            "input_flow_data": {
+                "flow_context": {
+                    "debug_overrides": {},
+                    "start_location": {"location": "splash_screen"},
                 }
             },
-            "subtask_versions":{
-                "contacts_live_sync_permission_prompt":0,
-                "email_verification":1,
-                "topics_selector":1,
-                "wait_spinner":1,
-                "cta":4
-            }
+            "subtask_versions": {
+                "contacts_live_sync_permission_prompt": 0,
+                "email_verification": 1,
+                "topics_selector": 1,
+                "wait_spinner": 1,
+                "cta": 4,
+            },
         }
-        params = {
-            "flow_name":"login"
-        }
+        params = {"flow_name": "login"}
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            params=params,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -104,24 +110,31 @@ class TwitterFrontendFlow:
     def LoginJsInstrumentationSubtask(self):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"LoginJsInstrumentationSubtask",
-                "js_instrumentation": {
-                    "response":json.dumps({
-                        "rf": {
-                            "af07339bbc6d24ced887d705eb0c9fd29b4a7d7ddc21136c9f94d53a4bc774d2": 88,
-                            "a6ce87d6481c6ec4a823548be3343437888441d2a453061c54f8e2eb325856f7": 250,
-                            "a0062ad06384a8afd38a41cd83f31b0dbfdea0eff4b24c69f0dd9095b2fb56d6": 16,
-                            "a929e5913a5715d93491eaffaa139ba4977cbc826a5e2dbcdc81cae0f093db25": 186
-                        },
-                        "s": "Q-H-53m1uXImK0F0ogrxRQtCWTH1KIlPbIy0MloowlMa4WNK5ZCcDoXyRs1q_cPbynK73w_wfHG_UVRKKBWRoh6UJtlPS5kMa1p8fEvTYi76hwdzBEzovieR8t86UpeSkSBFYcL8foYKSp6Nop5mQR_QHGyEeleclCPUvzS0HblBJqZZdtUo-6by4BgCyu3eQ4fY5nOF8fXC85mu6k34wo982LMK650NsoPL96DBuloqSZvSHU47wq2uA4xy24UnI2WOc6U9KTvxumtchSYNnXq1HV662B8U2-jWrzvIU4yUHV3JYUO6sbN6j8Ho9JaUNJpJSK7REwqCBQ3yG7iwMAAAAX2Vqcbs"
-                    }),
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginJsInstrumentationSubtask",
+                    "js_instrumentation": {
+                        "response": json.dumps(
+                            {
+                                "rf": {
+                                    "af07339bbc6d24ced887d705eb0c9fd29b4a7d7ddc21136c9f94d53a4bc774d2": 88,
+                                    "a6ce87d6481c6ec4a823548be3343437888441d2a453061c54f8e2eb325856f7": 250,
+                                    "a0062ad06384a8afd38a41cd83f31b0dbfdea0eff4b24c69f0dd9095b2fb56d6": 16,
+                                    "a929e5913a5715d93491eaffaa139ba4977cbc826a5e2dbcdc81cae0f093db25": 186,
+                                },
+                                "s": "Q-H-53m1uXImK0F0ogrxRQtCWTH1KIlPbIy0MloowlMa4WNK5ZCcDoXyRs1q_cPbynK73w_wfHG_UVRKKBWRoh6UJtlPS5kMa1p8fEvTYi76hwdzBEzovieR8t86UpeSkSBFYcL8foYKSp6Nop5mQR_QHGyEeleclCPUvzS0HblBJqZZdtUo-6by4BgCyu3eQ4fY5nOF8fXC85mu6k34wo982LMK650NsoPL96DBuloqSZvSHU47wq2uA4xy24UnI2WOc6U9KTvxumtchSYNnXq1HV662B8U2-jWrzvIU4yUHV3JYUO6sbN6j8Ho9JaUNJpJSK7REwqCBQ3yG7iwMAAAAX2Vqcbs",
+                            }
+                        ),
+                        "link": "next_link",
+                    },
                 }
-            }
-        ]}
+            ],
+        }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -130,22 +143,26 @@ class TwitterFrontendFlow:
     def LoginEnterUserIdentifierSSOSubtask(self, user_id):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"LoginEnterUserIdentifierSSOSubtask",
-                "settings_list":{
-                    "setting_responses":[{
-                        "key":"user_identifier",
-                        "response_data":{
-                            "text_data":{
-                                "result":user_id
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginEnterUserIdentifierSSOSubtask",
+                    "settings_list": {
+                        "setting_responses": [
+                            {
+                                "key": "user_identifier",
+                                "response_data": {"text_data": {"result": user_id}},
                             }
-                        }
-                    }],"link":"next_link"
+                        ],
+                        "link": "next_link",
+                    },
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -154,15 +171,20 @@ class TwitterFrontendFlow:
     def AccountDuplicationCheck(self):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"AccountDuplicationCheck",
-                "check_logged_in_account":{
-                    "link":"AccountDuplicationCheck_false"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "AccountDuplicationCheck",
+                    "check_logged_in_account": {
+                        "link": "AccountDuplicationCheck_false"
+                    },
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -171,16 +193,18 @@ class TwitterFrontendFlow:
     def LoginEnterAlternateIdentifierSubtask(self, text):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"LoginEnterAlternateIdentifierSubtask",
-                "enter_text":{
-                    "text":text,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginEnterAlternateIdentifierSubtask",
+                    "enter_text": {"text": text, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -189,16 +213,18 @@ class TwitterFrontendFlow:
     def LoginEnterPassword(self, password):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"LoginEnterPassword",
-                "enter_password":{
-                    "password":password,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginEnterPassword",
+                    "enter_password": {"password": password, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -207,16 +233,18 @@ class TwitterFrontendFlow:
     def LoginTwoFactorAuthChallenge(self, TwoFactorCode):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"LoginTwoFactorAuthChallenge",
-                "enter_text":{
-                    "text": TwoFactorCode,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginTwoFactorAuthChallenge",
+                    "enter_text": {"text": TwoFactorCode, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -225,12 +253,12 @@ class TwitterFrontendFlow:
     # attの取得 無くても動くっぽい
 
     def get_att(self):
-        data = {
-            "flow_token": self.flow_token,
-            "subtask_inputs":[]
-        }
+        data = {"flow_token": self.flow_token, "subtask_inputs": []}
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.content = response
         return self
@@ -239,14 +267,18 @@ class TwitterFrontendFlow:
 
     def Viewer(self):
         params = {
-            "variables": json.dumps({
-                "withCommunitiesMemberships":True,
-                "withCommunitiesCreation":True,
-                "withSuperFollowsUserFields":True
-            })
+            "variables": json.dumps(
+                {
+                    "withCommunitiesMemberships": True,
+                    "withCommunitiesCreation": True,
+                    "withSuperFollowsUserFields": True,
+                }
+            )
         }
         response = self.session.get(
-            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer", headers=self.__get_headers(), params=params
+            "https://twitter.com/i/api/graphql/O_C5Q6xAVNOmeolcXjKqYw/Viewer",
+            headers=self.__get_headers(),
+            params=params,
         )
 
         self.content = response.json()
@@ -256,27 +288,27 @@ class TwitterFrontendFlow:
 
     def password_reset_flow(self):
         data = {
-            "input_flow_data":{
-                "flow_context":{
-                    "debug_overrides":{},
-                    "start_location":{
-                        "location":"manual_link"
-                    }
+            "input_flow_data": {
+                "flow_context": {
+                    "debug_overrides": {},
+                    "start_location": {"location": "manual_link"},
                 }
             },
-            "subtask_versions":{
-                "contacts_live_sync_permission_prompt":0,
-                "email_verification":1,
-                "topics_selector":1,
-                "wait_spinner":1,
-                "cta":4
-            }
+            "subtask_versions": {
+                "contacts_live_sync_permission_prompt": 0,
+                "email_verification": 1,
+                "topics_selector": 1,
+                "wait_spinner": 1,
+                "cta": 4,
+            },
         }
-        params = {
-            "flow_name":"password_reset"
-        }
+        params = {"flow_name": "password_reset"}
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, params=params, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            params=params,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -285,24 +317,31 @@ class TwitterFrontendFlow:
     def PwrJsInstrumentationSubtask(self):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PwrJsInstrumentationSubtask",
-                "js_instrumentation": {
-                    "response":json.dumps({
-                        "rf": {
-                            "af07339bbc6d24ced887d705eb0c9fd29b4a7d7ddc21136c9f94d53a4bc774d2": 88,
-                            "a6ce87d6481c6ec4a823548be3343437888441d2a453061c54f8e2eb325856f7": 250,
-                            "a0062ad06384a8afd38a41cd83f31b0dbfdea0eff4b24c69f0dd9095b2fb56d6": 16,
-                            "a929e5913a5715d93491eaffaa139ba4977cbc826a5e2dbcdc81cae0f093db25": 186
-                        },
-                        "s": "Q-H-53m1uXImK0F0ogrxRQtCWTH1KIlPbIy0MloowlMa4WNK5ZCcDoXyRs1q_cPbynK73w_wfHG_UVRKKBWRoh6UJtlPS5kMa1p8fEvTYi76hwdzBEzovieR8t86UpeSkSBFYcL8foYKSp6Nop5mQR_QHGyEeleclCPUvzS0HblBJqZZdtUo-6by4BgCyu3eQ4fY5nOF8fXC85mu6k34wo982LMK650NsoPL96DBuloqSZvSHU47wq2uA4xy24UnI2WOc6U9KTvxumtchSYNnXq1HV662B8U2-jWrzvIU4yUHV3JYUO6sbN6j8Ho9JaUNJpJSK7REwqCBQ3yG7iwMAAAAX2Vqcbs"
-                    }),
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PwrJsInstrumentationSubtask",
+                    "js_instrumentation": {
+                        "response": json.dumps(
+                            {
+                                "rf": {
+                                    "af07339bbc6d24ced887d705eb0c9fd29b4a7d7ddc21136c9f94d53a4bc774d2": 88,
+                                    "a6ce87d6481c6ec4a823548be3343437888441d2a453061c54f8e2eb325856f7": 250,
+                                    "a0062ad06384a8afd38a41cd83f31b0dbfdea0eff4b24c69f0dd9095b2fb56d6": 16,
+                                    "a929e5913a5715d93491eaffaa139ba4977cbc826a5e2dbcdc81cae0f093db25": 186,
+                                },
+                                "s": "Q-H-53m1uXImK0F0ogrxRQtCWTH1KIlPbIy0MloowlMa4WNK5ZCcDoXyRs1q_cPbynK73w_wfHG_UVRKKBWRoh6UJtlPS5kMa1p8fEvTYi76hwdzBEzovieR8t86UpeSkSBFYcL8foYKSp6Nop5mQR_QHGyEeleclCPUvzS0HblBJqZZdtUo-6by4BgCyu3eQ4fY5nOF8fXC85mu6k34wo982LMK650NsoPL96DBuloqSZvSHU47wq2uA4xy24UnI2WOc6U9KTvxumtchSYNnXq1HV662B8U2-jWrzvIU4yUHV3JYUO6sbN6j8Ho9JaUNJpJSK7REwqCBQ3yG7iwMAAAAX2Vqcbs",
+                            }
+                        ),
+                        "link": "next_link",
+                    },
                 }
-            }
-        ]}
+            ],
+        }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -311,16 +350,18 @@ class TwitterFrontendFlow:
     def PasswordResetBegin(self, user_id):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PasswordResetBegin",
-                "enter_text":{
-                    "text":user_id,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PasswordResetBegin",
+                    "enter_text": {"text": user_id, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -329,53 +370,61 @@ class TwitterFrontendFlow:
     def PasswordResetChooseChallenge(self):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PasswordResetChooseChallenge",
-                "choice_selection":{
-                    "link":"next_link",
-                    "selected_choices":["0"]
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PasswordResetChooseChallenge",
+                    "choice_selection": {
+                        "link": "next_link",
+                        "selected_choices": ["0"],
+                    },
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
-        ).json()
-        self.flow_token = response["flow_token"]
-        self.content = response
-        return self
-    
-    def PwrKnowledgeChallenge(self, text):
-        data = {
-            "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PwrKnowledgeChallenge",
-                "enter_text":{
-                    "text":text,
-                    "link":"next_link"
-                }
-            }]
-        }
-        response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
         return self
 
+    def PwrKnowledgeChallenge(self, text):
+        data = {
+            "flow_token": self.flow_token,
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PwrKnowledgeChallenge",
+                    "enter_text": {"text": text, "link": "next_link"},
+                }
+            ],
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
+        ).json()
+        self.flow_token = response["flow_token"]
+        self.content = response
+        return self
 
     def PasswordResetConfirmChallenge(self, code):
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PasswordResetConfirmChallenge",
-                "enter_text":{
-                    "text":code,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PasswordResetConfirmChallenge",
+                    "enter_text": {"text": code, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
-            "https://twitter.com/i/api/1.1/onboarding/task.json", headers=self.__get_headers(), json=data, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
         ).json()
         self.flow_token = response["flow_token"]
         self.content = response
@@ -386,61 +435,68 @@ class TwitterFrontendFlow:
     def CreateTweet(self, tweet_text):
         data = {
             "queryId": "XyvN0Wv13eeu_gVIHDi10g",
-            "variables": json.dumps({
-            "tweet_text": tweet_text,
-            "media": {
-                "media_entities": [],
-                "possibly_sensitive": False
-            },
-            "withDownvotePerspective": False,
-            "withReactionsMetadata": False,
-            "withReactionsPerspective": False,
-            "withSuperFollowsTweetFields": True,
-            "withSuperFollowsUserFields": False,
-            "semantic_annotation_ids": [],
-            "dark_request": False,
-            "withBirdwatchPivots": False
-            })
+            "variables": json.dumps(
+                {
+                    "tweet_text": tweet_text,
+                    "media": {"media_entities": [], "possibly_sensitive": False},
+                    "withDownvotePerspective": False,
+                    "withReactionsMetadata": False,
+                    "withReactionsPerspective": False,
+                    "withSuperFollowsTweetFields": True,
+                    "withSuperFollowsUserFields": False,
+                    "semantic_annotation_ids": [],
+                    "dark_request": False,
+                    "withBirdwatchPivots": False,
+                }
+            ),
         }
         response = self.session.post(
-            "https://twitter.com/i/api/graphql/XyvN0Wv13eeu_gVIHDi10g/CreateTweet", headers=self.__get_headers(), json=data
+            "https://twitter.com/i/api/graphql/XyvN0Wv13eeu_gVIHDi10g/CreateTweet",
+            headers=self.__get_headers(),
+            json=data,
         ).json()
         self.content = response
         return self
 
     def AudioSpaceById(self, id):
         params = {
-            "variables": json.dumps({
-                "id":id,
-                "isMetatagsQuery":True,
-                "withSuperFollowsUserFields":True,
-                "withBirdwatchPivots":False,
-                "withDownvotePerspective":False,
-                "withReactionsMetadata":False,
-                "withReactionsPerspective":False,
-                "withSuperFollowsTweetFields":True,
-                "withReplays":True,
-                "withScheduledSpaces":True
-            })
+            "variables": json.dumps(
+                {
+                    "id": id,
+                    "isMetatagsQuery": True,
+                    "withSuperFollowsUserFields": True,
+                    "withBirdwatchPivots": False,
+                    "withDownvotePerspective": False,
+                    "withReactionsMetadata": False,
+                    "withReactionsPerspective": False,
+                    "withSuperFollowsTweetFields": True,
+                    "withReplays": True,
+                    "withScheduledSpaces": True,
+                }
+            )
         }
 
         response = self.session.post(
-            "https://twitter.com/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById", headers=self.__get_headers(), params=params
+            "https://twitter.com/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById",
+            headers=self.__get_headers(),
+            params=params,
         ).json()
         self.content = response
         return self
 
-
-    def live_video_stream(self, id = True):
+    def live_video_stream(self, id=True):
         if id:
             id = self.content["data"]["audioSpace"]["metadata"]["media_key"]
         params = {
-            "client":"web",
-            "use_syndication_guest_id":False,
-            "cookie_set_host":"twitter.com"
+            "client": "web",
+            "use_syndication_guest_id": False,
+            "cookie_set_host": "twitter.com",
         }
         response = self.session.get(
-            "https://twitter.com/i/api/1.1/live_video_stream/status/" + id, headers=self.__get_headers(), params=params, proxies=self.proxies
+            "https://twitter.com/i/api/1.1/live_video_stream/status/" + id,
+            headers=self.__get_headers(),
+            params=params,
+            proxies=self.proxies,
         ).json()
         self.content = response
         return self
