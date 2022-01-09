@@ -17,7 +17,6 @@ print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-      .AccountDuplicationCheck()
       .LoginEnterPassword("パスワード").content)
 ```
 2段階認証
@@ -26,7 +25,6 @@ print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-      .AccountDuplicationCheck()
       .LoginEnterPassword("パスワード")
       .LoginTwoFactorAuthChallenge("2段階認証のコード").content)
 ```
@@ -36,7 +34,6 @@ print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-      .AccountDuplicationCheck()
       .LoginEnterAlternateIdentifierSubtask("電話番号またはメールアドレス")
       .LoginEnterPassword("パスワード").content)
 ```
@@ -47,7 +44,6 @@ print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask()
     .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
-    .PasswordResetChooseChallenge()
     .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
@@ -59,7 +55,6 @@ print(TwitterFrontendFlow()
     .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
     .PwrKnowledgeChallenge("メールアドレス")
     .PwrKnowledgeChallenge("電話番号")
-    .PasswordResetChooseChallenge()
     .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
@@ -70,7 +65,6 @@ print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-      .AccountDuplicationCheck()
       .LoginEnterPassword("パスワード")
       .SaveCookies("user.json"))
 ```
