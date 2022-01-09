@@ -85,14 +85,6 @@ print(TwitterFrontendFlow()
 
 
 ## sample
-user_idを取得
-```
-print(TwitterFrontendFlow()
-    .login_flow()
-    .LoginJsInstrumentationSubtask()
-    .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-    .content["subtasks"][0]["check_logged_in_account"]["user_id"])
-```
 
 メールアドレスを取得
 ```
