@@ -1,5 +1,8 @@
 # TwitterFrontendFlow
-TwitterのLogin Flowをいじる
+Twitterの内部APIを叩く<br>
+ログイン: [TwitterFrontendFlow](https://github.com/fa0311/TwitterFrontendFlow) /
+取得: [TweetURLtoData](https://github.com/fa0311/TweetURLtoData) /
+スペース: [TwitterSpacesWiretap](https://github.com/fa0311/TwitterSpacesWiretapTwitter)
 
 ## proxy
 ```
@@ -11,7 +14,7 @@ TwitterFrontendFlow(proxies={
 
 ## login flow
 
-通常ログイン
+### 通常ログイン
 ```
 print(TwitterFrontendFlow()
       .login_flow()
@@ -19,7 +22,7 @@ print(TwitterFrontendFlow()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
       .LoginEnterPassword("パスワード").content)
 ```
-2段階認証
+### 2段階認証
 ```
 print(TwitterFrontendFlow()
       .login_flow()
@@ -28,7 +31,7 @@ print(TwitterFrontendFlow()
       .LoginEnterPassword("パスワード")
       .LoginTwoFactorAuthChallenge("2段階認証のコード").content)
 ```
-通常とは異なるログイン操作が行われました
+### 通常とは異なるログイン操作が行われました
 ```
 print(TwitterFrontendFlow()
       .login_flow()
@@ -47,7 +50,7 @@ print(TwitterFrontendFlow()
     .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
-個人情報を確認してください
+### 個人情報を確認してください
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
@@ -75,8 +78,8 @@ print(TwitterFrontendFlow()
 ```
 
 ## after login
-
-ツイート
+おまけ程度
+### ツイート
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
@@ -86,7 +89,7 @@ print(TwitterFrontendFlow()
 
 ## sample
 
-メールアドレスを取得
+### メールアドレスを取得
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
