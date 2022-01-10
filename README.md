@@ -37,7 +37,7 @@ print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
-      .LoginEnterAlternateIdentifierSubtask("電話番号またはメールアドレス")
+      .LoginEnterAlternateIdentifierSubtask("電話番号/ユーザー名")
       .LoginEnterPassword("パスワード").content)
 ```
 ## password reset flow
@@ -96,4 +96,14 @@ print(TwitterFrontendFlow()
     .PwrJsInstrumentationSubtask()
     .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
     .content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
+```
+
+## help
+
+### inappropriate method
+LoginFlowのリクエストを送る順番が不適切と検知した場合に表示されます<br>
+あくまで検知なのでこれをバイパスする方法があります
+```
+flow = TwitterFrontendFlow()
+flow.method_check_bypass = True
 ```

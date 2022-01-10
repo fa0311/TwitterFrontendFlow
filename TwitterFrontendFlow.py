@@ -10,6 +10,8 @@ class TwitterFrontendFlow:
         self.session = requests.session()
         self.__twitter()
         self.x_guest_token = self.__get_guest_token()
+        self.method_check_bypass = False
+        self.flow_token = None
 
     def __twitter(self):
         headers = {
@@ -43,7 +45,26 @@ class TwitterFrontendFlow:
             "x-twitter-client-language": "ja",
         }
 
-    # Cookieの保存(jsonだから本番環境では使わないように)
+    def get_subtask_ids(self):
+        return [subtasks["subtask_id"] for subtasks in self.content["subtasks"]]
+
+    def __flow_token_check(self):
+        if self.flow_token == None:
+            raise Exception("not found token")
+
+    def __error_check(self):
+        if self.content.get("errors"):
+            raise Exception(self.content["errors"][0]["message"])
+
+    def __method_check(self, method_name):
+        if self.method_check_bypass:
+            return
+        if method_name not in self.get_subtask_ids():
+            raise Exception(
+                "{0} is inappropriate method. choose from {1}. information: https://github.com/fa0311/TwitterFrontendFlow#inappropriate-method".format(
+                    method_name, ", ".join(self.get_subtask_ids())
+                )
+            )
 
     def LoadCookies(self, file_path):
         with open(file_path, "r") as f:
@@ -103,11 +124,14 @@ class TwitterFrontendFlow:
             params=params,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def LoginJsInstrumentationSubtask(self):
+        self.__flow_token_check()
+        self.__method_check("LoginJsInstrumentationSubtask")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -136,11 +160,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def LoginEnterUserIdentifierSSOSubtask(self, user_id):
+        self.__flow_token_check()
+        self.__method_check("LoginEnterUserIdentifierSSOSubtask")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -164,11 +191,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def AccountDuplicationCheck(self):
+        self.__flow_token_check()
+        self.__method_check("AccountDuplicationCheck")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -186,11 +216,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def LoginEnterAlternateIdentifierSubtask(self, text):
+        self.__flow_token_check()
+        self.__method_check("LoginEnterAlternateIdentifierSubtask")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -206,11 +239,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def LoginEnterPassword(self, password):
+        self.__flow_token_check()
+        self.__method_check("LoginEnterPassword")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -226,11 +262,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def LoginTwoFactorAuthChallenge(self, TwoFactorCode):
+        self.__flow_token_check()
+        self.__method_check("LoginTwoFactorAuthChallenge")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -246,8 +285,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     # attの取得 無くても動くっぽい
@@ -261,6 +301,7 @@ class TwitterFrontendFlow:
             proxies=self.proxies,
         ).json()
         self.content = response
+        self.__error_check()
         return self
 
     # ct0の更新 無くても動くっぽい
@@ -281,8 +322,14 @@ class TwitterFrontendFlow:
             params=params,
         )
 
-        self.content = response.json()
+        self.content = response
+        self.__error_check()
         return self
+
+    def RedirectToPasswordReset(self):
+        raise Exception(
+            "RedirectToPasswordResetは現在サポートされていません。代わりにpassword_reset_flowを使用して下さい。"
+        )
 
     # パスワードリセット
 
@@ -310,11 +357,14 @@ class TwitterFrontendFlow:
             params=params,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def PwrJsInstrumentationSubtask(self):
+        self.__flow_token_check()
+        self.__method_check("PwrJsInstrumentationSubtask")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -343,11 +393,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def PasswordResetBegin(self, user_id):
+        self.__flow_token_check()
+        self.__method_check("PasswordResetBegin")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -363,11 +416,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def PasswordResetChooseChallenge(self):
+        self.__flow_token_check()
+        self.__method_check("PasswordResetChooseChallenge")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -386,11 +442,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def PwrKnowledgeChallenge(self, text):
+        self.__flow_token_check()
+        self.__method_check("PwrKnowledgeChallenge")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -406,11 +465,14 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     def PasswordResetConfirmChallenge(self, code):
+        self.__flow_token_check()
+        self.__method_check("PasswordResetConfirmChallenge")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
@@ -426,8 +488,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
-        self.flow_token = response["flow_token"]
+        self.flow_token = response.get("flow_token")
         self.content = response
+        self.__error_check()
         return self
 
     # ログイン後
@@ -456,4 +519,5 @@ class TwitterFrontendFlow:
             json=data,
         ).json()
         self.content = response
+        self.__error_check()
         return self
