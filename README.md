@@ -42,25 +42,30 @@ print(TwitterFrontendFlow()
 ```
 ## password reset flow
 
+### 通常リセット
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask()
     .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
     .PasswordResetChooseChallenge()
-    .PasswordResetConfirmChallenge("認証コード").content)
+    .PasswordResetConfirmChallenge("認証コード")
+    .PasswordResetNewPassword("新しいパスワード")
+    .PasswordResetSurvey("0").content)
 ```
 
 ### 個人情報を確認してください
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
-    .PwrJsInstrumentationSubtask().
+    .PwrJsInstrumentationSubtask()
     .PasswordResetBegin("ユーザー名")
     .PwrKnowledgeChallenge("メールアドレス")
     .PwrKnowledgeChallenge("電話番号")
     .PasswordResetChooseChallenge()
-    .PasswordResetConfirmChallenge("認証コード").content)
+    .PasswordResetConfirmChallenge("認証コード")
+    .PasswordResetNewPassword("新しいパスワード")
+    .PasswordResetSurvey("0").content)
 ```
 
 
@@ -90,15 +95,8 @@ print(TwitterFrontendFlow()
 
 
 ## sample
-
-### 認証コードを****@**にメールで送信する
-```
-print(TwitterFrontendFlow()
-    .password_reset_flow()
-    .PwrJsInstrumentationSubtask()
-    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
-    .content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
-```
+中身見たほうが早いかも<br>
+[sample.py](https://github.com/fa0311/TwitterFrontendFlow/blob/master/sample.py)
 
 ## help
 
