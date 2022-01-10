@@ -92,10 +92,49 @@ print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateTweet("ツイートしたい文字列").content)
 ```
+### いいね
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .FavoriteTweet("ツイートid").content)
+```
+### いいね取り消し
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .UnfavoriteTweet("ツイートid").content)
+```
+### リツイート
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .CreateRetweet("ツイートid").content)
+```
+### リツイート取り消し
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .DeleteRetweet("ツイートid").content)
+```
+### フォロー
+未だに新APIへの移行が終わってないらしく旧APIでの実装
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .friendships_create("ユーザーの内部id").content)
+```
+### フォロー取り消し
+未だに新APIへの移行が終わってないらしく旧APIでの実装
+```
+print(TwitterFrontendFlow()
+        .LoadCookies("user.json")
+        .friendships_destroy("ユーザーの内部id").content)
+```
 
 
 ## sample
 中身見たほうが早いかも<br>
+これが動かないアカウントがあったら詳細を詳しくissueに<br>
 [sample.py](https://github.com/fa0311/TwitterFrontendFlow/blob/master/sample.py)
 
 ## help
