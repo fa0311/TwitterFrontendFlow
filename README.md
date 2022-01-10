@@ -47,6 +47,7 @@ print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask()
     .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .PasswordResetChooseChallenge()
     .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
@@ -55,9 +56,10 @@ print(TwitterFrontendFlow()
 print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask().
-    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .PasswordResetBegin("ユーザー名")
     .PwrKnowledgeChallenge("メールアドレス")
     .PwrKnowledgeChallenge("電話番号")
+    .PasswordResetChooseChallenge()
     .PasswordResetConfirmChallenge("認証コード").content)
 ```
 
@@ -89,7 +91,7 @@ print(TwitterFrontendFlow()
 
 ## sample
 
-### メールアドレスを取得
+### 認証コードを****@**にメールで送信する
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
