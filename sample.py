@@ -61,6 +61,10 @@ elif action == "load":
 while True:
     print(
 """tweet: ツイート
+fav: いいね
+unfav: いいね取り消し
+follow: フォロー
+unfollow: フォロー取り消し
 save: cookieの出力
 end: 終了""")
 
@@ -69,6 +73,18 @@ end: 終了""")
     if action == "tweet":
         print("ツイート内容")
         flow.CreateTweet(input())
+    elif action == "fav":
+        print("ツイートid")
+        flow.FavoriteTweet(input())
+    elif action == "unfav":
+        print("ツイートid")
+        flow.UnfavoriteTweet(input())
+    elif action == "follow":
+        print("ユーザー内部id")
+        flow.friendships_create(input())
+    elif action == "unfollow":
+        print("ユーザー内部id")
+        flow.friendships_destroy(input())
     elif action == "save":
         print("ファイル名")
         flow.SaveCookies(input())

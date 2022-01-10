@@ -45,6 +45,16 @@ class TwitterFrontendFlow:
             "x-twitter-client-language": "ja",
         }
 
+    def __get_headers_legacy(self):
+        return {
+            "authorization": self.AUTHORIZATION,
+            "User-Agent": self.USER_AGENT,
+            "Content-type": "application/x-www-form-urlencoded",
+            "x-csrf-token": self.session.cookies.get("ct0"),
+            "x-twitter-active-user": "yes",
+            "x-twitter-auth-type": "OAuth2Session",
+        }
+
     def get_subtask_ids(self):
         return [subtasks["subtask_id"] for subtasks in self.content["subtasks"]]
 
@@ -421,7 +431,7 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
-    def PasswordResetChooseChallenge(self, choices = "0"):
+    def PasswordResetChooseChallenge(self, choices="0"):
         self.__flow_token_check()
         self.__method_check("PasswordResetChooseChallenge")
         data = {
@@ -498,13 +508,12 @@ class TwitterFrontendFlow:
         self.__method_check("PasswordResetNewPassword")
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PasswordResetNewPassword",
-                "enter_password":{
-                    "password":password,
-                    "link":"next_link"
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PasswordResetNewPassword",
+                    "enter_password": {"password": password, "link": "next_link"},
                 }
-            }]
+            ],
         }
         response = self.session.post(
             "https://twitter.com/i/api/1.1/onboarding/task.json",
@@ -517,19 +526,20 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
-
-    def PasswordResetSurvey(self, choices = "0"):
+    def PasswordResetSurvey(self, choices="0"):
         self.__flow_token_check()
         self.__method_check("PasswordResetSurvey")
         data = {
             "flow_token": self.flow_token,
-            "subtask_inputs":[{
-                "subtask_id":"PasswordResetSurvey",
-                "choice_selection":{
-                    "link":"next_link",
-                    "selected_choices":[choices]
+            "subtask_inputs": [
+                {
+                    "subtask_id": "PasswordResetSurvey",
+                    "choice_selection": {
+                        "link": "next_link",
+                        "selected_choices": [choices],
+                    },
                 }
-            }]
+            ],
         }
         response = self.session.post(
             "https://twitter.com/i/api/1.1/onboarding/task.json",
@@ -569,4 +579,86 @@ class TwitterFrontendFlow:
         ).json()
         self.content = response
         self.__error_check()
+        return self
+
+    def FavoriteTweet(self, tweet_id):
+        data = {
+            "queryId": "lI07N6Otwv1PhnEgXILM7A",
+            "variables": json.dumps(
+                {
+                    "tweet_id": tweet_id,
+                }
+            ),
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet",
+            headers=self.__get_headers(),
+            json=data,
+        ).json()
+        self.content = response
+        self.__error_check()
+        return self
+
+    def UnfavoriteTweet(self, tweet_id):
+        data = {
+            "queryId": "ZYKSe-w7KEslx3JhSIk5LA",
+            "variables": json.dumps(
+                {
+                    "tweet_id": tweet_id,
+                }
+            ),
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet",
+            headers=self.__get_headers(),
+            json=data,
+        ).json()
+        self.content = response
+        self.__error_check()
+        return self
+
+    # Legacy API v1.1
+
+    def friendships_create(self, tweet_id):
+        data = {
+            "include_profile_interstitial_type": 1,
+            "include_blocking": 1,
+            "include_blocked_by": 1,
+            "include_followed_by": 1,
+            "include_want_retweets": 1,
+            "include_mute_edge": 1,
+            "include_can_dm": 1,
+            "include_can_media_tag": 1,
+            "include_ext_has_nft_avatar": 1,
+            "skip_status": 1,
+            "id": tweet_id,
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/friendships/create.json",
+            headers=self.__get_headers_legacy(),
+            data=data,
+        ).json()
+        self.content = response
+        return self
+
+    def friendships_destroy(self, tweet_id):
+        data = {
+            "include_profile_interstitial_type": 1,
+            "include_blocking": 1,
+            "include_blocked_by": 1,
+            "include_followed_by": 1,
+            "include_want_retweets": 1,
+            "include_mute_edge": 1,
+            "include_can_dm": 1,
+            "include_can_media_tag": 1,
+            "include_ext_has_nft_avatar": 1,
+            "skip_status": 1,
+            "id": tweet_id,
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/friendships/destroy.json",
+            headers=self.__get_headers_legacy(),
+            data=data,
+        ).json()
+        self.content = response
         return self
