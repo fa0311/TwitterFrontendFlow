@@ -617,6 +617,45 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
+    def CreateRetweet(self, tweet_id):
+        data = {
+            "queryId": "ojPdsZsimiJrUGLR1sjUtA",
+            "variables": json.dumps(
+                {
+                    "tweet_id": tweet_id,
+                    "dark_request": False,
+                }
+            ),
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/ojPdsZsimiJrUGLR1sjUtA/CreateRetweet",
+            headers=self.__get_headers(),
+            json=data,
+        ).json()
+        self.content = response
+        self.__error_check()
+        return self
+
+    def DeleteRetweet(self, tweet_id):
+        data = {
+            "queryId": "iQtK4dl5hBmXewYZuEOKVw",
+            "variables": json.dumps(
+                {
+                    "source_tweet_id": tweet_id,
+                    "dark_request": False,
+                }
+            ),
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/graphql/iQtK4dl5hBmXewYZuEOKVw/DeleteRetweet",
+            headers=self.__get_headers(),
+            json=data,
+        ).json()
+        self.content = response
+        self.__error_check()
+        return self
+
+
     # Legacy API v1.1
 
     def friendships_create(self, tweet_id):

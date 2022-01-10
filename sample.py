@@ -63,6 +63,8 @@ while True:
 """tweet: ツイート
 fav: いいね
 unfav: いいね取り消し
+rt: リツイート
+unrt: リツイート取り消し
 follow: フォロー
 unfollow: フォロー取り消し
 save: cookieの出力
@@ -79,6 +81,12 @@ end: 終了""")
     elif action == "unfav":
         print("ツイートid")
         flow.UnfavoriteTweet(input())
+    elif action == "rt":
+        print("ツイートid")
+        flow.CreateRetweet(input())
+    elif action == "unrt":
+        print("ツイートid")
+        flow.DeleteRetweet(input())
     elif action == "follow":
         print("ユーザー内部id")
         flow.friendships_create(input())
