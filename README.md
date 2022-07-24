@@ -4,6 +4,17 @@ Twitterの内部APIを叩く<br>
 取得: [TweetURLtoData](https://github.com/fa0311/TweetURLtoData) /
 スペース: [TwitterSpacesWiretap](https://github.com/fa0311/TwitterSpacesWiretap)
 
+## P.S. restriction bypass
+[hackerone.com](https://hackerone.com/reports/1439026)<br>
+This code does not work.
+```
+print(TwitterFrontendFlow()
+    .password_reset_flow()
+    .PwrJsInstrumentationSubtask()
+    .PasswordResetBegin("電話番号/メールアドレス/ユーザー名")
+    .content["subtasks"][0]["choice_selection"]["choices"][0]["text"]["text"])
+```
+
 ## proxy
 ```
 TwitterFrontendFlow(proxies={
