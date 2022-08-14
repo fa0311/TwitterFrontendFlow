@@ -1,5 +1,6 @@
 # TwitterFrontendFlow
-Twitterの内部APIを叩く<br>
+
+Twitter の内部 API を叩く<br>
 ログイン: [TwitterFrontendFlow](https://github.com/fa0311/TwitterFrontendFlow) /
 取得: [TweetURLtoData](https://github.com/fa0311/TweetURLtoData) /
 スペース: [TwitterSpacesWiretap](https://github.com/fa0311/TwitterSpacesWiretap)
@@ -8,6 +9,7 @@ Twitterの内部APIを叩く<br>
 [hackerone.com](https://hackerone.com/reports/1439026)<br>
 
 ## proxy
+
 ```
 TwitterFrontendFlow(proxies={
         "http":"",
@@ -18,34 +20,42 @@ TwitterFrontendFlow(proxies={
 ## login flow
 
 ### 通常ログイン
+
 ```
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
-      .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+      .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
       .LoginEnterPassword("パスワード").content)
 ```
-### 2段階認証
+
+### 2 段階認証
+
 ```
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
-      .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+      .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
       .LoginEnterPassword("パスワード")
+      .AccountDuplicationCheck()
       .LoginTwoFactorAuthChallenge("2段階認証のコード").content)
 ```
+
 ### 通常とは異なるログイン操作が行われました
+
 ```
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
-      .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+      .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
       .LoginEnterAlternateIdentifierSubtask("電話番号/ユーザー名")
       .LoginEnterPassword("パスワード").content)
 ```
+
 ## password reset flow
 
 ### 通常リセット
+
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
@@ -58,6 +68,7 @@ print(TwitterFrontendFlow()
 ```
 
 ### 個人情報を確認してください
+
 ```
 print(TwitterFrontendFlow()
     .password_reset_flow()
@@ -71,13 +82,13 @@ print(TwitterFrontendFlow()
     .PasswordResetSurvey("0").content)
 ```
 
-
 ## Save / Load
+
 ```
 (TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
-      .LoginEnterUserIdentifierSSOSubtask("電話番号/メールアドレス/ユーザー名")
+      .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
       .LoginEnterPassword("パスワード")
       .SaveCookies("user.json"))
 ```
@@ -88,63 +99,82 @@ print(TwitterFrontendFlow()
 ```
 
 ## after login
+
 おまけ程度
+
 ### ツイート
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateTweet("ツイートしたい文字列").content)
 ```
+
 ### いいね
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .FavoriteTweet("ツイートid").content)
 ```
+
 ### いいね取り消し
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .UnfavoriteTweet("ツイートid").content)
 ```
+
 ### リツイート
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateRetweet("ツイートid").content)
 ```
+
 ### リツイート取り消し
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .DeleteRetweet("ツイートid").content)
 ```
+
 ### フォロー
-未だに新APIへの移行が終わってないらしく旧APIでの実装
+
+未だに新 API への移行が終わってないらしく旧 API での実装
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .friendships_create("ユーザーの内部id").content)
 ```
+
 ### フォロー取り消し
-未だに新APIへの移行が終わってないらしく旧APIでの実装
+
+未だに新 API への移行が終わってないらしく旧 API での実装
+
 ```
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .friendships_destroy("ユーザーの内部id").content)
 ```
 
-
 ## sample
+
 中身見たほうが早いかも<br>
-これが動かないアカウントがあったら詳細を詳しくissueに<br>
+これが動かないアカウントがあったら詳細を詳しく issue に<br>
 [sample.py](https://github.com/fa0311/TwitterFrontendFlow/blob/master/sample.py)
 
 ## help
 
 ### inappropriate method
-LoginFlowのリクエストを送る順番が不適切と検知した場合に表示されます<br>
+
+LoginFlow のリクエストを送る順番が不適切と検知した場合に表示されます<br>
 あくまで検知なのでこれをバイパスする方法があります
+
 ```
 flow = TwitterFrontendFlow()
 flow.method_check_bypass = True

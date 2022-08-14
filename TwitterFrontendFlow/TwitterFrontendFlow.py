@@ -175,14 +175,14 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
-    def LoginEnterUserIdentifierSSOSubtask(self, user_id):
+    def LoginEnterUserIdentifierSSO(self, user_id):
         self.__flow_token_check()
-        self.__method_check("LoginEnterUserIdentifierSSOSubtask")
+        self.__method_check("LoginEnterUserIdentifierSSO")
         data = {
             "flow_token": self.flow_token,
             "subtask_inputs": [
                 {
-                    "subtask_id": "LoginEnterUserIdentifierSSOSubtask",
+                    "subtask_id": "LoginEnterUserIdentifierSSO",
                     "settings_list": {
                         "setting_responses": [
                             {
