@@ -12,9 +12,9 @@ action = input()
 if action == "login":
     flow.login_flow()
     flow.LoginJsInstrumentationSubtask()
-    if "LoginEnterUserIdentifierSSOSubtask"in flow.get_subtask_ids():
+    if "LoginEnterUserIdentifierSSO"in flow.get_subtask_ids():
         print("電話番号/メールアドレス/ユーザー名")
-        flow.LoginEnterUserIdentifierSSOSubtask(input())
+        flow.LoginEnterUserIdentifierSSO(input())
     if "LoginEnterAlternateIdentifierSubtask"in flow.get_subtask_ids():
         print(flow.content["subtasks"][0]["enter_text"]["primary_text"]["text"])
         flow.LoginEnterAlternateIdentifierSubtask(input())
