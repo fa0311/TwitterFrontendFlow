@@ -1,3 +1,4 @@
+from importlib.resources import contents
 from TwitterFrontendFlow.TwitterFrontendFlow import TwitterFrontendFlow
 
 flow = TwitterFrontendFlow()
@@ -25,6 +26,9 @@ if action == "login":
         print(flow.content["subtasks"][0]["enter_password"]["primary_text"]["text"])
         flow.LoginEnterPassword(input())
         print(flow.get_subtask_ids())
+    if "AccountDuplicationCheck"in flow.get_subtask_ids():
+        flow.AccountDuplicationCheck()
+        print(flow.get_subtask_ids())
     if "LoginTwoFactorAuthChallenge"in flow.get_subtask_ids():
         print(flow.content["subtasks"][0]["enter_text"]["header"]["primary_text"]["text"])
         flow.LoginTwoFactorAuthChallenge(input())
@@ -32,6 +36,9 @@ if action == "login":
     if "LoginSuccessSubtask"in flow.get_subtask_ids():
         print("ログインしました")
         print(flow.get_subtask_ids())
+    if "SuccessExit"not in flow.get_subtask_ids():
+        print("ログインに失敗しました")
+        exit()
 
 elif action == "password_reset":
     flow.password_reset_flow()

@@ -34,6 +34,7 @@ print(TwitterFrontendFlow()
       .LoginJsInstrumentationSubtask()
       .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
       .LoginEnterPassword("パスワード")
+      .AccountDuplicationCheck()
       .LoginTwoFactorAuthChallenge("2段階認証のコード").content)
 ```
 
