@@ -1,16 +1,20 @@
 # TwitterFrontendFlow
 
-Twitter の内部 API を叩く<br>
+Twitter の内部 API を叩く
+
 ログイン: [TwitterFrontendFlow](https://github.com/fa0311/TwitterFrontendFlow) /
 取得: [TweetURLtoData](https://github.com/fa0311/TweetURLtoData) /
 スペース: [TwitterSpacesWiretap](https://github.com/fa0311/TwitterSpacesWiretap)
 
 ## P.S. restriction bypass (Fixed)
-[hackerone.com](https://hackerone.com/reports/1439026)<br>
+
+[hackerone.com](https://hackerone.com/reports/1439026)
 
 ## proxy
 
-```
+[requests-docs](https://requests-docs-ja.readthedocs.io/en/latest/user/advanced/#proxies)
+
+```python
 TwitterFrontendFlow(proxies={
         "http":"",
         "https":""
@@ -21,7 +25,7 @@ TwitterFrontendFlow(proxies={
 
 ### 通常ログイン
 
-```
+```python
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
@@ -31,7 +35,7 @@ print(TwitterFrontendFlow()
 
 ### 2 段階認証
 
-```
+```python
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
@@ -43,7 +47,7 @@ print(TwitterFrontendFlow()
 
 ### 通常とは異なるログイン操作が行われました
 
-```
+```python
 print(TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
@@ -56,7 +60,7 @@ print(TwitterFrontendFlow()
 
 ### 通常リセット
 
-```
+```python
 print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask()
@@ -69,7 +73,7 @@ print(TwitterFrontendFlow()
 
 ### 個人情報を確認してください
 
-```
+```python
 print(TwitterFrontendFlow()
     .password_reset_flow()
     .PwrJsInstrumentationSubtask()
@@ -84,7 +88,7 @@ print(TwitterFrontendFlow()
 
 ## Save / Load
 
-```
+```python
 (TwitterFrontendFlow()
       .login_flow()
       .LoginJsInstrumentationSubtask()
@@ -93,7 +97,7 @@ print(TwitterFrontendFlow()
       .SaveCookies("user.json"))
 ```
 
-```
+```python
 (TwitterFrontendFlow()
         .LoadCookies("user.json"))
 ```
@@ -104,7 +108,7 @@ print(TwitterFrontendFlow()
 
 ### ツイート
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateTweet("ツイートしたい文字列").content)
@@ -112,7 +116,7 @@ print(TwitterFrontendFlow()
 
 ### いいね
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .FavoriteTweet("ツイートid").content)
@@ -120,7 +124,7 @@ print(TwitterFrontendFlow()
 
 ### いいね取り消し
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .UnfavoriteTweet("ツイートid").content)
@@ -128,7 +132,7 @@ print(TwitterFrontendFlow()
 
 ### リツイート
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .CreateRetweet("ツイートid").content)
@@ -136,7 +140,7 @@ print(TwitterFrontendFlow()
 
 ### リツイート取り消し
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .DeleteRetweet("ツイートid").content)
@@ -146,7 +150,7 @@ print(TwitterFrontendFlow()
 
 未だに新 API への移行が終わってないらしく旧 API での実装
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .friendships_create("ユーザーの内部id").content)
@@ -156,7 +160,7 @@ print(TwitterFrontendFlow()
 
 未だに新 API への移行が終わってないらしく旧 API での実装
 
-```
+```python
 print(TwitterFrontendFlow()
         .LoadCookies("user.json")
         .friendships_destroy("ユーザーの内部id").content)
@@ -164,18 +168,18 @@ print(TwitterFrontendFlow()
 
 ## sample
 
-中身見たほうが早いかも<br>
-これが動かないアカウントがあったら詳細を詳しく issue に<br>
+中身見たほうが早いかも
+これが動かないアカウントがあったら詳細を詳しく issue に
 [sample.py](https://github.com/fa0311/TwitterFrontendFlow/blob/master/sample.py)
 
 ## help
 
 ### inappropriate method
 
-LoginFlow のリクエストを送る順番が不適切と検知した場合に表示されます<br>
+LoginFlow のリクエストを送る順番が不適切と検知した場合に表示されます
 あくまで検知なのでこれをバイパスする方法があります
 
-```
+```python
 flow = TwitterFrontendFlow()
 flow.method_check_bypass = True
 ```
