@@ -3,7 +3,7 @@ import json
 
 
 class TwitterFrontendFlow:
-    def __init__(self, proxies={}):
+    def __init__(self, proxies={}, language="en"):
         self.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
         self.AUTHORIZATION = "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
         self.proxies = proxies
@@ -12,6 +12,7 @@ class TwitterFrontendFlow:
         self.x_guest_token = self.__get_guest_token()
         self.method_check_bypass = False
         self.flow_token = None
+        self.language = language
 
     def __twitter(self):
         headers = {
@@ -42,7 +43,7 @@ class TwitterFrontendFlow:
             "x-guest-token": self.x_guest_token,
             "x-csrf-token": self.session.cookies.get("ct0"),
             "x-twitter-active-user": "yes",
-            "x-twitter-client-language": "ja",
+            "x-twitter-client-language": self.language,
         }
 
     def __get_headers_legacy(self):
