@@ -1,4 +1,3 @@
-from importlib.resources import contents
 from TwitterFrontendFlow.TwitterFrontendFlow import TwitterFrontendFlow
 
 flow = TwitterFrontendFlow()
