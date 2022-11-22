@@ -301,7 +301,7 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
-    def LoginAcid(self, email):
+    def LoginAcid(self, acid):
         self.__flow_token_check()
         self.__method_check("LoginAcid")
         data = {
@@ -311,7 +311,7 @@ class TwitterFrontendFlow:
                     "subtask_id":"LoginAcid",
                     "enter_text":
                         {
-                            "text": email,
+                            "text": acid,
                             "link":"next_link"
                         }
                     }
