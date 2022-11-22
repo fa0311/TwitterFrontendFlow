@@ -56,6 +56,18 @@ print(TwitterFrontendFlow()
       .LoginEnterPassword("パスワード").content)
 ```
 
+### アカウントの安全のために
+
+```python
+print(TwitterFrontendFlow()
+      .login_flow()
+      .LoginJsInstrumentationSubtask()
+      .LoginEnterUserIdentifierSSO("電話番号/メールアドレス/ユーザー名")
+      .LoginEnterPassword("パスワード")
+      .AccountDuplicationCheck()
+      .LoginAcid("メールアドレス / メールアドレスのコード").content)
+```
+
 ## password reset flow
 
 ### 通常リセット

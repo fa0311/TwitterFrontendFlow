@@ -33,7 +33,7 @@ if action == "login":
         flow.LoginTwoFactorAuthChallenge(input())
         print(flow.get_subtask_ids())
     if "LoginAcid" in flow.get_subtask_ids():
-        print("Enter additional information (e.g. email address)")
+        print(flow.content["subtasks"][0]["enter_text"]["header"]["secondary_text"]["text"])
         flow.LoginAcid(input())
         print(flow.get_subtask_ids())
     if "LoginSuccessSubtask" in flow.get_subtask_ids():
