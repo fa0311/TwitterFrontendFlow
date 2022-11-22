@@ -301,6 +301,34 @@ class TwitterFrontendFlow:
         self.__error_check()
         return self
 
+    def LoginAcid(self, email):
+        self.__flow_token_check()
+        self.__method_check("LoginAcid")
+        data = {
+            "flow_token":self.flow_token,
+            "subtask_inputs":[
+                {
+                    "subtask_id":"LoginAcid",
+                    "enter_text":
+                        {
+                            "text": email,
+                            "link":"next_link"
+                        }
+                    }
+                ]
+            }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
+        ).json()
+        self.flow_token = response.get("flow_token")
+        self.content = response
+        self.__error_check()
+        return self
+
+
     # attの取得 無くても動くっぽい
 
     def get_att(self):

@@ -13,30 +13,34 @@ if action == "login":
     flow.login_flow()
     flow.LoginJsInstrumentationSubtask()
     print(flow.get_subtask_ids())
-    if "LoginEnterUserIdentifierSSO"in flow.get_subtask_ids():
-        print("電話番号/メールアドレス/ユーザー名")
+    if "LoginEnterUserIdentifierSSO" in flow.get_subtask_ids():
+        print("Telephone number / Email address / User name")
         flow.LoginEnterUserIdentifierSSO(input())
         print(flow.get_subtask_ids())
-    if "LoginEnterAlternateIdentifierSubtask"in flow.get_subtask_ids():
+    if "LoginEnterAlternateIdentifierSubtask" in flow.get_subtask_ids():
         print(flow.content["subtasks"][0]["enter_text"]["primary_text"]["text"])
         flow.LoginEnterAlternateIdentifierSubtask(input())
         print(flow.get_subtask_ids())
-    if "LoginEnterPassword"in flow.get_subtask_ids():
+    if "LoginEnterPassword" in flow.get_subtask_ids():
         print(flow.content["subtasks"][0]["enter_password"]["primary_text"]["text"])
         flow.LoginEnterPassword(input())
         print(flow.get_subtask_ids())
-    if "AccountDuplicationCheck"in flow.get_subtask_ids():
+    if "AccountDuplicationCheck" in flow.get_subtask_ids():
         flow.AccountDuplicationCheck()
         print(flow.get_subtask_ids())
-    if "LoginTwoFactorAuthChallenge"in flow.get_subtask_ids():
+    if "LoginTwoFactorAuthChallenge" in flow.get_subtask_ids():
         print(flow.content["subtasks"][0]["enter_text"]["header"]["primary_text"]["text"])
         flow.LoginTwoFactorAuthChallenge(input())
         print(flow.get_subtask_ids())
-    if "LoginSuccessSubtask"in flow.get_subtask_ids():
-        print("ログインしました")
+    if "LoginAcid" in flow.get_subtask_ids():
+        print("Enter additional information (e.g. email address)")
+        flow.LoginAcid(input())
         print(flow.get_subtask_ids())
-    if "SuccessExit"not in flow.get_subtask_ids():
-        print("ログインに失敗しました")
+    if "LoginSuccessSubtask" in flow.get_subtask_ids():
+        print("===========Success===========")
+        print(flow.get_subtask_ids())
+    if "SuccessExit" not in flow.get_subtask_ids():
+        print("Error")
         exit()
 
 elif action == "password_reset":
