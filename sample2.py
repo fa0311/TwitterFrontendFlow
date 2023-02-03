@@ -1,4 +1,4 @@
-from TwitterFrontendFlow.TwitterFrontendFlow.TwitterFrontendFlow import *
+from TwitterFrontendFlow.TwitterFrontendFlow import TwitterFrontendFlow
 
 flow = TwitterFrontendFlow()
 
