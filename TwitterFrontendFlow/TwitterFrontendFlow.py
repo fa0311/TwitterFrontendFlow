@@ -63,9 +63,9 @@ class TwitterFrontendFlow:
         if self.flow_token == None:
             raise Exception("not found token")
 
-    def __error_check(self):
-        if self.content.get("errors"):
-            raise Exception(self.content["errors"][0]["message"])
+    def __error_check(self, content):
+        if content.get("errors"):
+            raise Exception(content["errors"][0]["message"])
 
     def __method_check(self, method_name):
         if self.method_check_bypass:
@@ -135,9 +135,9 @@ class TwitterFrontendFlow:
             params=params,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def LoginJsInstrumentationSubtask(self):
@@ -171,9 +171,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def LoginEnterUserIdentifierSSO(self, user_id):
@@ -202,9 +202,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def AccountDuplicationCheck(self):
@@ -227,9 +227,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def LoginEnterAlternateIdentifierSubtask(self, text):
@@ -250,9 +250,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def LoginEnterPassword(self, password):
@@ -273,9 +273,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def LoginTwoFactorAuthChallenge(self, TwoFactorCode):
@@ -296,9 +296,32 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
+        return self
+
+    def LoginAcid(self, acid):
+        self.__flow_token_check()
+        self.__method_check("LoginAcid")
+        data = {
+            "flow_token": self.flow_token,
+            "subtask_inputs": [
+                {
+                    "subtask_id": "LoginAcid",
+                    "enter_text": {"text": acid, "link": "next_link"},
+                }
+            ],
+        }
+        response = self.session.post(
+            "https://twitter.com/i/api/1.1/onboarding/task.json",
+            headers=self.__get_headers(),
+            json=data,
+            proxies=self.proxies,
+        ).json()
+        self.__error_check(response)
+        self.flow_token = response.get("flow_token")
+        self.content = response
         return self
 
     def LoginAcid(self, acid):
@@ -339,8 +362,8 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     # ct0の更新 無くても動くっぽい
@@ -360,9 +383,8 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             params=params,
         )
-
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     def RedirectToPasswordReset(self):
@@ -396,9 +418,9 @@ class TwitterFrontendFlow:
             params=params,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PwrJsInstrumentationSubtask(self):
@@ -432,9 +454,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PasswordResetBegin(self, user_id):
@@ -455,9 +477,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PasswordResetChooseChallenge(self, choices="0"):
@@ -481,9 +503,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PwrKnowledgeChallenge(self, text):
@@ -504,9 +526,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PasswordResetConfirmChallenge(self, code):
@@ -527,9 +549,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PasswordResetNewPassword(self, password):
@@ -550,9 +572,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     def PasswordResetSurvey(self, choices="0"):
@@ -576,9 +598,9 @@ class TwitterFrontendFlow:
             json=data,
             proxies=self.proxies,
         ).json()
+        self.__error_check(response)
         self.flow_token = response.get("flow_token")
         self.content = response
-        self.__error_check()
         return self
 
     # ログイン後
@@ -606,8 +628,8 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             json=data,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     def FavoriteTweet(self, tweet_id):
@@ -624,8 +646,8 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             json=data,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     def UnfavoriteTweet(self, tweet_id):
@@ -642,8 +664,8 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             json=data,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     def CreateRetweet(self, tweet_id):
@@ -661,8 +683,8 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             json=data,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
 
     def DeleteRetweet(self, tweet_id):
@@ -680,10 +702,9 @@ class TwitterFrontendFlow:
             headers=self.__get_headers(),
             json=data,
         ).json()
+        self.__error_check(response)
         self.content = response
-        self.__error_check()
         return self
-
 
     # Legacy API v1.1
 
