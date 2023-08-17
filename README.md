@@ -1,5 +1,12 @@
 # TwitterFrontendFlow
 
+----
+----
+<!> This project is not maintained. Use [twitter_openapi_python](https://github.com/fa0311/twitter_openapi_python) and [tweepy_authlib](https://github.com/tsukumijima/tweepy-authlib)
+
+----
+----
+
 Twitter の内部 API を叩く
 
 ログイン: [TwitterFrontendFlow](https://github.com/fa0311/TwitterFrontendFlow) /
